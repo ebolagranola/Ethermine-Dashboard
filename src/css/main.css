@@ -213,6 +213,7 @@ tr:last-child td {
 #misc {
   background: #AEDE00;
   padding: 8px 64px 32px 0px;
+  transition: .5s;
 }
 
 #misc div div h2, #misc div h2 {
@@ -224,12 +225,12 @@ div#workers h2 {
 }
 
 #payouts {
-  padding: 8px 16px 16px;
+  padding: 8px 0px 16px 16px;
   /* background: #3e3e3e; */
 }
 
 #payouts div {
-  margin: 0px 32px;
+  margin: 0px 8px;
 }
 
 #payouts div h2 {
@@ -244,6 +245,10 @@ div#workers h2 {
 .nextPayout span {
   font-size: 64px;
   color: #F89218;
+}
+
+#nextPayoutContent {
+
 }
 
 #unpaid h2 {
@@ -270,6 +275,7 @@ div#workers h2 {
 }
 
 #reload button span {
+  /* font-family: "Akira", monospace; */
   letter-spacing: 4px;
   text-shadow: none;
   transition: letter-spacing .15s ease, margin-left .15s ease, color .15s ease;

@@ -47,10 +47,22 @@
       </div>
 
       <div id="currencyRates" class="flex-container">
-        <div id="coinsPerMin">
-          <h2>ETH per Day</h2>
-          <span class="loading">???</span>
-          <span></span>
+        <div class="units">
+          <div id="coinsPerMin">
+            <h2>ETH per Day</h2>
+            <span class="loading">???</span>
+            <span></span>
+          </div>
+          <div id="usdPerMin" style="display: none;">
+            <h2>USD per Day</h2>
+            <span class="loading">???</span>
+            <span></span>
+          </div>
+          <div id="btcPerMin" style="display: none;">
+            <h2>BTC per Day</h2>
+            <span class="loading">???</span>
+            <span></span>
+          </div>
         </div>
         <div id="workers">
           <h2>Workers</h2>
@@ -75,16 +87,30 @@
 
           <div class="nextPayout">
             <h2>Next Payout</h2>
-            <span class="loading">???</span>
-            <span></span>
-            <div>days</div>
+            <div id="nextPayoutContent">
+              <span class="loading">???</span>
+              <span></span>
+              <div>days</div>
+            </div>
           </div>
         </div>
 
         <div id="unpaid">
-          <h2>loading...</h2>
-          <span class="loading">???</span>
-          <span></span>
+          <div class="eth">
+            <h2>loading eth...</h2>
+            <span class="loading">???</span>
+            <span></span>
+          </div>
+          <div class="usd" style="display: none;">
+            <h2>loading $...</h2>
+            <span class="loading">???</span>
+            <span></span>
+          </div>
+          <div class="btc" style="display: none;">
+            <h2>loading btc...</h2>
+            <span class="loading">???</span>
+            <span></span>
+          </div>
         </div>
       </div>
 

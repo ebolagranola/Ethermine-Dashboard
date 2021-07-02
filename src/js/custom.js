@@ -1,6 +1,6 @@
 const {getCurrentWindow} = require('electron').remote;
 const fs = require('fs');
-let miningStats, workerStats, payoutStats;
+let poolStats, miningStats, workerStats, payoutStats;
 var miningComplete = workersComplete = payoutComplete = false;
 // let fileURL = './src/assets/walletAddress.txt';
 let fileURL = './resources/app/src/assets/walletAddress.txt';
@@ -15,6 +15,9 @@ function run(address) {
   getMiningStats(address);
   getWorkerStats(address);
   getPayoutStats(address);
+  cycleUnits('.units');
+  cycleUnits('#unpaid');
+
   interval = setInterval(function() { reload(); }, 60000);
 }
 
@@ -33,17 +36,30 @@ $(window).on('load', function() {
         if (error) throw error;
       });
       reload();
-      // interval = setInterval(function() { reload(); }, 60000);
     } else {
       clearInterval(interval);
     }
-
   }, 500));
 
   if (miningComplete && workersComplete && payoutComplete) {
     $('.loading').hide();
   }
 });
+
+// ***************************************************************************
+
+function getPoolStats() {
+  $.ajax({
+    'url': 'https://api.ethermine.org/poolStats',
+    'type': 'GET',
+    'dataType': 'json',
+    'success': function(response) {
+      poolStats = response.data;
+    }
+  }).done(function() {
+    populatePoolStats();
+  });
+}
 
 function getMiningStats(address) {
   $.ajax({
@@ -55,6 +71,7 @@ function getMiningStats(address) {
     }
   }).done(function() {
     populateMiningStats();
+    getPoolStats();
   });
 }
 
@@ -85,6 +102,13 @@ function getPayoutStats(address) {
 }
 
 // ***************************************************************************
+function populatePoolStats() {
+  let unit = $("#unpaid").children();
+  for (let i = 1; i < unit.length; i++) {
+    unit[i].children[1].innerHTML = (poolStats.price[String(unit[i].className)]).toFixed(6);
+  }
+}
+
 let currID, property, payoutMessage;
 let date, dateToday;
 
@@ -98,7 +122,7 @@ function populateMiningStats() {
       $(this).find("span").append(property);
     });
 
-    $('#content_wrapper #currencyRates').children().each(function() {
+    $('#content_wrapper #currencyRates .units').children().each(function() {
       property = miningStats[this.id];
 
       property = (property * 60 * 24).toFixed(6);
@@ -140,18 +164,20 @@ function populatePayoutStats() {
         $(this).find("span").append(new Date(property));
       } else {
         date = new Date();
-         dateToday = date.getDate();
-
-        if (dateToday == 28) {
-          payoutMessage = "~ pay today ~";
-        } else if (dateToday > 28) {
-          payoutMessage = parseFloat(new Date(date.getFullYear(), date.getMonth()+1, 0).getDate()) - parseFloat(dateToday) + 28;
-        } else {
-          payoutMessage = 28 - parseFloat(dateToday);
-        }
+        dateToday = date.getDate();
 
         $(this).find(".loading").remove();
-        $(this).find("span").append(payoutMessage);
+        if (dateToday == 28) {
+          payoutMessage = "<span style='font-size: 48px;'>today</span>";
+          $(this).find("#nextPayoutContent").html(payoutMessage);
+        } else if (dateToday > 28) {
+          payoutMessage = parseFloat(new Date(date.getFullYear(), date.getMonth()+1, 0).getDate()) - parseFloat(dateToday) + 28;
+          $(this).find("span").append(payoutMessage);
+        } else {
+          payoutMessage = 28 - parseFloat(dateToday);
+          $(this).find("span").append(payoutMessage);
+        }
+
       }
     });
 
@@ -177,3 +203,22 @@ function convert2MH(hashRate) {
 
   return parseFloat(cleansedInput).toFixed(2);
 }
+
+function cycleUnits(el) {
+  let lastUnit = 0;
+  let unitCount = 1;
+  let unit = $(el).children();
+
+  $(el).click(function() {
+    $(this).children().eq(lastUnit).hide();
+    $(this).children().eq(unitCount).show();
+    lastUnit = unitCount;
+    if (((unitCount + 1) % unit.length) == 0) {
+      unitCount = 0;
+    } else {
+      unitCount++;
+    }
+  });
+}
+
+// ***************************************************************************

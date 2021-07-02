@@ -210,6 +210,10 @@ tr:last-child td {
   font-size: 64px;
 }
 
+.units {
+  min-width: 620px;
+}
+
 #misc {
   background: #AEDE00;
   padding: 8px 64px 32px 0px;
@@ -249,6 +253,10 @@ div#workers h2 {
 
 #nextPayoutContent {
 
+}
+
+#unpaid {
+  min-width: 400px;
 }
 
 #unpaid h2 {

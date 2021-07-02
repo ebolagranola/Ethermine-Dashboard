@@ -104,8 +104,17 @@ function getPayoutStats(address) {
 // ***************************************************************************
 function populatePoolStats() {
   let unit = $("#unpaid").children();
+  let temp = poolStats.price[String(unit[0].className)];
   for (let i = 1; i < unit.length; i++) {
-    unit[i].children[1].innerHTML = (poolStats.price[String(unit[i].className)]).toFixed(6);
+    if (unit[i].className == "usd") {
+      temp = parseFloat(poolStats.price[String(unit[i].className)]) * parseFloat(unit[i].children[1].innerHTML);
+      temp = parseFloat(temp).toFixed(2);
+    } else if (unit[i].className == "btc") {
+      temp = (parseFloat(poolStats.price[String(unit[i].className)]) * parseFloat(unit[i].children[1].innerHTML)).toFixed(6);
+    } else {
+      temp = poolStats.price[String(unit[i].className)];
+    }
+    unit[i].children[1].innerHTML = temp;
   }
 }
 
@@ -124,8 +133,11 @@ function populateMiningStats() {
 
     $('#content_wrapper #currencyRates .units').children().each(function() {
       property = miningStats[this.id];
-
-      property = (property * 60 * 24).toFixed(6);
+      if (this.id == "usdPerMin") {
+        property = (property * 60 * 24).toFixed(2);
+      } else {
+        property = (property * 60 * 24).toFixed(6);
+      }
       $(this).find(".loading").remove();
       $(this).find("span").append(property);
     });
